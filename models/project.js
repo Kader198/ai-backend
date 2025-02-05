@@ -34,4 +34,20 @@ const Project = sequelize.define('Project', {
   }
 });
 
+// Define associations
+Project.associate = (models) => {
+  Project.belongsToMany(models.User, {
+    through: 'ProjectMembers',
+    as: 'members'
+  });
+  Project.hasMany(models.Task, {
+    foreignKey: 'projectId',
+    as: 'tasks'
+  });
+  Project.belongsTo(models.Team, {
+    foreignKey: 'teamId',
+    as: 'team'
+  });
+};
+
 module.exports = Project; 
