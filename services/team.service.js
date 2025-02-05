@@ -13,8 +13,17 @@ class TeamService {
     return Team.findAll({
       where: filters,
       include: [
-        { model: User, as: 'members', attributes: ['id', 'name', 'email'] },
-        { model: Project, as: 'projects' }
+        { 
+          model: User, 
+          as: 'members',
+          attributes: ['id', 'name', 'email'],
+          through: { attributes: [] } // Exclude junction table attributes
+        },
+        { 
+          model: Project, 
+          as: 'projects',
+          attributes: ['id', 'name', 'status']
+        }
       ]
     });
   }
@@ -22,8 +31,17 @@ class TeamService {
   async getTeamById(id) {
     return Team.findByPk(id, {
       include: [
-        { model: User, as: 'members', attributes: ['id', 'name', 'email'] },
-        { model: Project, as: 'projects' }
+        { 
+          model: User, 
+          as: 'members',
+          attributes: ['id', 'name', 'email'],
+          through: { attributes: [] }
+        },
+        { 
+          model: Project, 
+          as: 'projects',
+          attributes: ['id', 'name', 'status']
+        }
       ]
     });
   }

@@ -55,11 +55,13 @@ User.associate = (models) => {
   });
   User.belongsToMany(models.Project, { 
     through: 'ProjectMembers', 
-    as: 'projects' 
+    as: 'projects',
+    foreignKey: 'userId'
   });
   User.belongsToMany(models.Team, { 
     through: 'TeamMembers', 
-    as: 'teams' 
+    as: 'teams',
+    foreignKey: 'userId'
   });
   User.hasMany(models.Comment, { 
     foreignKey: 'userId',
@@ -67,7 +69,8 @@ User.associate = (models) => {
   });
   User.belongsToMany(models.Event, { 
     through: 'EventAttendees', 
-    as: 'events' 
+    as: 'events',
+    foreignKey: 'userId'
   });
   User.hasMany(models.Event, {
     foreignKey: 'createdBy',

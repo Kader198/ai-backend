@@ -17,4 +17,17 @@ const Team = sequelize.define('Team', {
   }
 });
 
+// Define associations
+Team.associate = (models) => {
+  Team.belongsToMany(models.User, {
+    through: 'TeamMembers',
+    as: 'members',
+    foreignKey: 'teamId'
+  });
+  Team.hasMany(models.Project, {
+    foreignKey: 'teamId',
+    as: 'projects'
+  });
+};
+
 module.exports = Team; 
