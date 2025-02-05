@@ -14,8 +14,18 @@ const taskController = {
   // Get all tasks
   async getAll(req, res, next) {
     try {
-      const tasks = await taskService.getAllTasks(req.query);
-      res.json(tasks);
+      const { page, pageSize, search, ...filters } = req.query;
+      const result = await taskService.getAllTasks({
+        page: page ? parseInt(page) : undefined,
+        pageSize: pageSize ? parseInt(pageSize) : undefined,
+        search,
+        filters
+      });
+      
+      res.json({
+        data: result.tasks,
+        total: result.total
+      });
     } catch (error) {
       next(error);
     }

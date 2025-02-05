@@ -51,10 +51,10 @@ router.get('/', auth, projectController.getAll);
  *       400:
  *         description: Invalid input
  */
-router.post('/', auth, validate(projectValidation.createProject), projectController.create);
+router.post('/', auth, projectController.create);
 
 router.get('/:id', auth, projectController.getById);
-router.put('/:id', auth, validate(projectValidation.updateProject), projectController.update);
+router.put('/:id', auth, projectController.update);
 router.delete('/:id', auth, projectController.delete);
 
 module.exports = router; 
