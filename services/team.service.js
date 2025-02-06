@@ -1,4 +1,5 @@
 const { Team, User, Project } = require('../models');
+const { Op } = require('sequelize');
 
 class TeamService {
   async createTeam(teamData) {
@@ -9,23 +10,52 @@ class TeamService {
     return team;
   }
 
-  async getAllTeams(filters = {}) {
-    return Team.findAll({
-      where: filters,
-      include: [
-        { 
-          model: User, 
-          as: 'members',
-          attributes: ['id', 'name', 'email'],
-          through: { attributes: [] } // Exclude junction table attributes
-        },
-        { 
-          model: Project, 
-          as: 'projects',
-          attributes: ['id', 'name', 'status']
-        }
-      ]
-    });
+  async getAllTeams({ page = 1, pageSize = 10, search, filters = {} }) {
+    try {
+      let whereClause = { ...filters };
+
+      // Add search functionality
+      if (search) {
+        whereClause = {
+          ...whereClause,
+          [Op.or]: [
+            { name: { [Op.like]: `%${search}%` } },
+            { description: { [Op.like]: `%${search}%` } }
+          ]
+        };
+      }
+
+      // Get total count for pagination
+      const total = await Team.count({ where: whereClause });
+
+      // Get paginated teams
+      const teams = await Team.findAll({
+        where: whereClause,
+        include: [
+          { 
+            model: User, 
+            as: 'members',
+            attributes: ['id', 'name', 'email'],
+            through: { attributes: [] }
+          },
+          { 
+            model: Project, 
+            as: 'projects',
+            attributes: ['id', 'name', 'status']
+          }
+        ],
+        order: [['createdAt', 'DESC']],
+        limit: pageSize,
+        offset: (page - 1) * pageSize
+      });
+
+      return {
+        data: teams,
+        total
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getTeamById(id) {
