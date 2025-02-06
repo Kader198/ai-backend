@@ -77,4 +77,6 @@ const auth = require('../middleware/auth');
  */
 router.get('/stats', auth, dashboardController.getStats);
 
+router.post('/logout', dashboardController.logout);
+
 module.exports = router; 
